@@ -124,7 +124,86 @@ public class LivrariaVirtual {
                             impresso.setEstoque(Integer.parseInt(scanner.nextLine()));
 
                             view.cadastrarLivro(impresso);
+                            break;
+
+                        case 2:
+                            Eletronico eletronico = new Eletronico();
+                            System.out.print("Digite o título do livro: ");
+                            eletronico.setTitulo(scanner.nextLine());
+
+                            System.out.print("Digite os autores do livro: ");
+                            eletronico.setAutores(scanner.nextLine());
+
+                            System.out.print("Digite a editora do livro: ");
+                            eletronico.setEditora(scanner.nextLine());
+
+                            System.out.print("Digite o preço do livro: ");
+                            eletronico.setPreco(Float.parseFloat(scanner.nextLine()));
+
+                            System.out.print("Digite o frete do livro: ");
+                            eletronico.setTamanho(Integer.parseInt(scanner.nextLine()));
+
+                            view.cadastrarLivro(eletronico);
+                            break;
+
+                        case 3:
+                            Impresso impresso1 = new Impresso();
+                            Eletronico eletronico1 = new Eletronico();
+
+                            System.out.print("Digite o título do livro: ");
+                            String titulo = scanner.nextLine();
+
+                            System.out.print("Digite os autores do livro: ");
+                            String autores = scanner.nextLine();
+
+                            System.out.print("Digite a editora do livro: ");
+                            String editora = scanner.nextLine();
+
+                            System.out.print("Digite o preço do livro: ");
+                            float preco = Float.parseFloat(scanner.nextLine());
+
+                            System.out.print("Digite o frete do livro: ");
+                            float frete = Float.parseFloat(scanner.nextLine());
+
+                            System.out.print("Digite a quantidade em estoque do livro: ");
+                            int estoque = Integer.parseInt(scanner.nextLine());
+
+                            System.out.print("Digite o frete do livro: ");
+                            int tamanho = Integer.parseInt(scanner.nextLine());
+
+                            impresso1.setTitulo(titulo);
+                            impresso1.setAutores(autores);
+                            impresso1.setEditora(editora);
+                            impresso1.setPreco(preco);
+                            impresso1.setFrete(frete);
+                            impresso1.setEstoque(estoque);
+
+                            eletronico1.setTitulo(titulo);
+                            eletronico1.setAutores(autores);
+                            eletronico1.setEditora(editora);
+                            eletronico1.setPreco(preco);
+                            eletronico1.setTamanho(tamanho);
+
+                            view.cadastrarLivro(impresso1);
+                            view.cadastrarLivro(eletronico1);
+                            break;
+
+                        default:
+                            System.out.println("Digite uma opção válida.");
+                            break;
                     }
+                    break;
+                case 2:
+                    System.out.print("Digite o nome do cliente: ");
+                    String cliente = scanner.nextLine();
+
+                    System.out.print("Digite quantos livros deseja comprar: ");
+                    int numeroDeLivros = Integer.parseInt(scanner.nextLine());
+
+                    for (int i = 0; i < numeroDeLivros; i++){
+                        
+                    }
+
             }
         }
     }
