@@ -14,14 +14,24 @@ public class VendasDao {
     }
 
     public void cadastrar(Venda venda){
-        this.em.getTransaction();
+        this.em.getTransaction().begin();
         this.em.persist(venda);
         this.em.getTransaction().commit();
         this.em.close();
     }
 
+    public List<Venda> buscarVendas(){
+        return this.em.createQuery("""
+    select v from Venda v
+""", Venda.class).getResultList();
+    }
+
     public List<Venda> listar(){
-        return this.em.createQuery("select v from Venda v", Venda.class)
+        return this.em.createQuery("""
+select v from Venda v inner join v.livrosEletronicos e
+inner join v.livrosImpressos i
+                                """,
+                        Venda.class)
                 .getResultList();
     }
 }

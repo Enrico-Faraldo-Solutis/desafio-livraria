@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence version="3.0"
+             xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee">
+
+    <persistence-unit name="livraria" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider> <!-- Adicione o provider explicitamente -->
+
+        <class>br.com.solutis.entity.Venda</class>
+        <class>br.com.solutis.entity.Impresso</class>
+        <class>br.com.solutis.entity.Eletronico</class>
+        <properties>
+            <!-- Conexão -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:livraria"/>
+            <property name="jakarta.persistence.jdbc.user" value="user"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+
+            <!-- Configurações Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+        </properties>
+    </persistence-unit>
+</persistence>

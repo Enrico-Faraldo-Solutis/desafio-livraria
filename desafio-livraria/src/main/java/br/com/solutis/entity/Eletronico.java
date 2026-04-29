@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "livro_eletronico")
 public class Eletronico extends Livro {
 
     private int tamanho;
@@ -38,7 +37,6 @@ public class Eletronico extends Livro {
     public String toString() {
         return "Eletronico{" +
                 "tamanho=" + tamanho +
-                ", vendas=" + vendas +
                 "} " + super.toString();
     }
 }

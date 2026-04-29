@@ -13,10 +13,10 @@ public class ImpressoDao {
     }
 
     public void cadastrar(Impresso impresso){
-        this.em.getTransaction();
+        this.em.getTransaction().begin();
         boolean existeComTitulo = this.em.createQuery
                         ("select count(i) from Impresso i where i.titulo = :titulo",
-                Integer.class)
+                Long.class)
                 .setParameter("titulo", impresso.getTitulo()).getSingleResult() > 0;
 
         if (existeComTitulo) {
@@ -33,5 +33,28 @@ public class ImpressoDao {
     public List<Impresso> listar(){
         return this.em.createQuery("select i from Impresso i", Impresso.class)
                 .getResultList();
+    }
+
+    public Impresso encontrarPorId(Integer id){
+        return this.em.find(Impresso.class, id);
+    }
+
+    public void vender(Integer id){
+        this.em.getTransaction().begin();
+
+        Impresso impresso = this.em.find(Impresso.class, id);
+        impresso.atualizarEstoque();
+
+        this.em.getTransaction().commit();
+        this.em.close();
+    }
+
+    public void registrarNaVenda(Impresso impresso){
+        this.em.getTransaction().begin();
+
+        this.em.merge(impresso);
+
+        this.em.getTransaction().commit();
+        this.em.close();
     }
 }

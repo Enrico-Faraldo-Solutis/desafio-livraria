@@ -14,10 +14,10 @@ public class EletronicoDao {
     }
 
     public void cadastrar(Eletronico eletronico){
-        this.em.getTransaction();
+        this.em.getTransaction().begin();
         boolean existeComTitulo = this.em.createQuery
                         ("select count(e) from Eletronico e where e.titulo = :titulo",
-                                Integer.class)
+                                Long.class)
                 .setParameter("titulo", eletronico.getTitulo()).getSingleResult() > 0;
 
         if (existeComTitulo) {
@@ -33,5 +33,18 @@ public class EletronicoDao {
     public List<Eletronico> listar(){
         return this.em.createQuery("select e from Eletronico e", Eletronico.class)
                 .getResultList();
+    }
+
+    public Eletronico encontrarPorId(Integer id){
+        return this.em.find(Eletronico.class, id);
+    }
+
+    public void registrarNaVenda(Eletronico eletronico){
+        this.em.getTransaction().begin();
+
+        this.em.merge(eletronico);
+
+        this.em.getTransaction().commit();
+        this.em.close();
     }
 }

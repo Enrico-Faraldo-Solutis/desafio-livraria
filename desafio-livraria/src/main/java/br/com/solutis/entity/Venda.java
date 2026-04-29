@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "vendas")
 public class Venda {
 
     private static int numVendas;
@@ -27,6 +26,7 @@ public class Venda {
 
     public void addLivroImpresso(Impresso i, int index){
         livrosImpressos.add(index, i);
+        i.getVendas().add(this);
     }
 
     public void addLivroEletronico(Eletronico e, int index){
@@ -76,5 +76,14 @@ public class Venda {
 
     public void setLivrosEletronicos(List<Eletronico> livrosEletronicos) {
         this.livrosEletronicos = livrosEletronicos;
+    }
+
+    @Override
+    public String toString() {
+        return "Venda{" +
+                "numero=" + numero +
+                ", cliente='" + cliente + '\'' +
+                ", valor=" + valor +
+                '}';
     }
 }

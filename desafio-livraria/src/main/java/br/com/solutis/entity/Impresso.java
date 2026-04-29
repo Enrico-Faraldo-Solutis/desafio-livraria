@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "livro_impresso")
 public class Impresso extends Livro{
 
     private float frete;
@@ -53,7 +52,6 @@ public class Impresso extends Livro{
         return "Impresso{" +
                 "frete=" + frete +
                 ", estoque=" + estoque +
-                ", vendas=" + vendas +
                 "} " + super.toString();
     }
 }

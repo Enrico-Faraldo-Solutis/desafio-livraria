@@ -45,6 +45,34 @@ public class LivrariaVirtual {
         dao.cadastrar(venda);
     }
 
+    public Venda buscarUltimaVenda(){
+        EntityManager em = JPAUtil.getEntityManager();
+        VendasDao dao = new VendasDao(em);
+
+        return dao.buscarVendas().getLast();
+    }
+
+    public void registrarNaVenda(Impresso impresso){
+        EntityManager em = JPAUtil.getEntityManager();
+        ImpressoDao dao = new ImpressoDao(em);
+
+        dao.registrarNaVenda(impresso);
+    }
+    public void registrarNaVenda(Eletronico eletronico){
+        EntityManager em = JPAUtil.getEntityManager();
+        EletronicoDao dao = new EletronicoDao(em);
+
+        dao.registrarNaVenda(eletronico);
+    }
+
+
+    public void venderLivroImpresso(Integer id){
+        EntityManager em = JPAUtil.getEntityManager();
+        ImpressoDao dao = new ImpressoDao(em);
+
+        dao.vender(id);
+    }
+
     public void listarLivrosImpressos(){
         EntityManager em = JPAUtil.getEntityManager();
         ImpressoDao dao = new ImpressoDao(em);
@@ -124,6 +152,7 @@ public class LivrariaVirtual {
                             impresso.setEstoque(Integer.parseInt(scanner.nextLine()));
 
                             view.cadastrarLivro(impresso);
+                            numImpressos++;
                             break;
 
                         case 2:
@@ -140,10 +169,11 @@ public class LivrariaVirtual {
                             System.out.print("Digite o preço do livro: ");
                             eletronico.setPreco(Float.parseFloat(scanner.nextLine()));
 
-                            System.out.print("Digite o frete do livro: ");
+                            System.out.print("Digite o tamanho do livro: ");
                             eletronico.setTamanho(Integer.parseInt(scanner.nextLine()));
 
                             view.cadastrarLivro(eletronico);
+                            numEletronicos++;
                             break;
 
                         case 3:
@@ -168,7 +198,7 @@ public class LivrariaVirtual {
                             System.out.print("Digite a quantidade em estoque do livro: ");
                             int estoque = Integer.parseInt(scanner.nextLine());
 
-                            System.out.print("Digite o frete do livro: ");
+                            System.out.print("Digite o tamanho do livro: ");
                             int tamanho = Integer.parseInt(scanner.nextLine());
 
                             impresso1.setTitulo(titulo);
@@ -185,7 +215,9 @@ public class LivrariaVirtual {
                             eletronico1.setTamanho(tamanho);
 
                             view.cadastrarLivro(impresso1);
+                            numImpressos++;
                             view.cadastrarLivro(eletronico1);
+                            numEletronicos++;
                             break;
 
                         default:
@@ -200,10 +232,122 @@ public class LivrariaVirtual {
                     System.out.print("Digite quantos livros deseja comprar: ");
                     int numeroDeLivros = Integer.parseInt(scanner.nextLine());
 
+                    Venda venda = new Venda();
+                    venda.setCliente(cliente);
+
+                    List<Impresso> impressosParaVender = new ArrayList<>();
+                    List<Eletronico> eletronicosParaVender = new ArrayList<>();
+
                     for (int i = 0; i < numeroDeLivros; i++){
-                        
+
+                        System.out.println("Escolha o tipo do livro para comprar");
+                        System.out.println("Digite 1 para impresso");
+                        System.out.println("Digite 2 para eletrônico");
+                        int livroCompra = Integer.parseInt(scanner.nextLine());
+
+                        switch (livroCompra){
+                            case 1:
+                                view.listarLivrosImpressos();
+
+                                System.out.println("\n Digite o id do livro que deseja comprar");
+                                Integer idImpresso = Integer.parseInt(scanner.nextLine());
+
+                                EntityManager emImpresso = JPAUtil.getEntityManager();
+                                ImpressoDao impressoDao = new ImpressoDao(emImpresso);
+
+                                Impresso impresso = impressoDao.encontrarPorId(idImpresso);
+                                impressoDao.vender(idImpresso);
+
+                                impressosParaVender.add(impresso);
+                                view.venderLivroImpresso(idImpresso);
+                                impressosParaVender.add(impresso);
+
+                                break;
+
+                            case 2:
+                                view.listarLivrosEletronicos();
+
+                                System.out.println("\n Digite o id do livro que deseja comprar");
+                                Integer idEletronico = Integer.parseInt(scanner.nextLine());
+
+                                EntityManager emEletronico = JPAUtil.getEntityManager();
+                                EletronicoDao eletronicoDao = new EletronicoDao(emEletronico);
+
+                                Eletronico eletronico = eletronicoDao.encontrarPorId(idEletronico);
+
+                                eletronicosParaVender.add(eletronico);
+                                eletronicosParaVender.add(eletronico);
+
+                                break;
+
+                            default:
+                                System.out.println("Digite um número válido");
+                                i--;
+                        }
+                    }
+                    venda.setLivrosEletronicos(eletronicosParaVender);
+                    venda.setLivrosImpressos(impressosParaVender);
+
+                    float valorLivrosEletronicos = 0;
+
+                    for (Eletronico eletronico : eletronicosParaVender){
+                        valorLivrosEletronicos += eletronico.getPreco();
                     }
 
+                    float valorLivrosImpressos = 0;
+
+                    for (Impresso impresso : impressosParaVender){
+                        valorLivrosImpressos += impresso.getPreco();
+                    }
+
+                    venda.setValor(valorLivrosEletronicos + valorLivrosImpressos);
+
+                    view.realizarVenda(venda);
+
+                    Venda vendaFeita = view.buscarUltimaVenda();
+
+                    view.vendas.add(vendaFeita);
+
+                    for (Impresso impresso : impressosParaVender){
+                        EntityManager em = JPAUtil.getEntityManager();
+                        ImpressoDao dao = new ImpressoDao(em);
+
+                        Impresso impressoManaged = dao.encontrarPorId(impresso.getId());
+
+                        impressoManaged.getVendas().add(vendaFeita);
+
+                        dao.registrarNaVenda(impressoManaged);
+                    }
+
+                    for (Eletronico eletronico : eletronicosParaVender){
+                        EntityManager em = JPAUtil.getEntityManager();
+                        EletronicoDao dao = new EletronicoDao(em);
+
+                        Eletronico eletronicoManaged = dao.encontrarPorId(eletronico.getId());
+
+                        eletronicoManaged.getVendas().add(vendaFeita);
+
+                        dao.registrarNaVenda(eletronicoManaged);
+                    }
+
+                    numVendas++;
+
+                    break;
+
+                case 3:
+                    view.listarLivros();
+                    break;
+
+                case 4:
+                    view.listarVendas();
+                    break;
+
+                case 5:
+                    System.out.println("Obrigado por visitar a livraria digital!");
+                    return;
+
+                default:
+                    System.out.println("digite uma opção valida");
             }
         }
     }
